@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do Pokémon</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <style>
+        .pokemon-detail {
+            padding: 1rem;
+            text-align: center;
+        }
+        .pokemon-detail img {
+            height: 150px;
+        }
+        .types {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 0;
+        }
+        .types .type {
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            background-color: #ccc;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <a href="index.html">⬅️ Voltar</a>
+        <div class="pokemon-detail" id="pokemonDetail"></div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search)
+        const name = params.get('name')
+        const detailContainer = document.getElementById('pokemonDetail')
+
+        if (name) {
+            fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+                .then(response => response.json())
+                .then(poke => {
+                    const types = poke.types.map(t => `<li class="type ${t.type.name}">${t.type.name}</li>`).join('')
+                    detailContainer.innerHTML = `
+                        <h1>${poke.name} #${poke.id}</h1>
+                        <img src="${poke.sprites.other.dream_world.front_default}" alt="${poke.name}">
+                        <ol class="types">${types}</ol>
+                        <p>Altura: ${poke.height / 10} m</p>
+                        <p>Peso: ${poke.weight / 10} kg</p>
+                    `
+                })
+        } else {
+            detailContainer.innerHTML = `<p>Pokémon não encontrado.</p>`
+        }
+    </script>
+</body>
+</html>
